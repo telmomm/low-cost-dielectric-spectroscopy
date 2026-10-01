@@ -18,8 +18,18 @@ Hay dos calibraciones distintas y se tratan por separado en el método y en el p
 
 | Calibración | Paso | Patrones |
 |---|---|---|
-| SOL del VNA | medida bruta → Γ en el plano del conector | cortocircuito, abierto y carga del kit |
+| SOL del VNA (en el firmware del equipo) | medida bruta → Γ en el plano del conector | cortocircuito, abierto y carga del kit |
 | De la sonda | Γ → ε* | aire, cortocircuito en la apertura y agua desionizada a temperatura conocida |
+
+El equipo entrega por USB el S11 ya corregido por la calibración SOL cargada en su firmware; eso es lo
+que se guarda. Con el modelo capacitivo, la calibración de la sonda absorbe cualquier transformación
+bilineal fija entre la apertura y el dato guardado, incluida esa SOL. Dos consecuencias:
+
+- **La calibración del firmware no puede cambiar entre la terna de la sonda y las muestras que se
+  convierten con ella.** Recalibrar el equipo obliga a repetir la terna. Se controla con `cal_sol_id`.
+- La calidad de la SOL no entra en ε* con este modelo; sí entraría con un modelo de inversión que
+  necesite el Γ real en el conector. Qué papel se le da en el presupuesto está por decidir
+  ([docs/DECISIONES.md](docs/DECISIONES.md)).
 
 ## 3. Magnitudes y métricas
 
@@ -59,7 +69,8 @@ Barrido de 50 kHz a 3 GHz en todas las medidas. El orden de los líquidos se ale
 ## 6. Procedimiento de una sesión
 
 1. Encender el VNA y esperar el tiempo de calentamiento (G1).
-2. Calibración SOL en el plano del conector de la sonda. Anotar su identificador.
+2. Calibración SOL en el propio equipo, en el plano del conector de la sonda, sobre la banda completa.
+   Anotar un `cal_sol_id` nuevo y no volver a tocarla hasta terminar la serie.
 3. Calibración de la sonda: aire, cortocircuito y agua, con la temperatura del agua registrada.
 4. Medir el líquido de comprobación. Si se sale de tolerancia (G1), repetir desde el paso 2.
 5. Medir los líquidos en orden aleatorizado. Entre muestras: limpiar, secar y comprobar que no hay

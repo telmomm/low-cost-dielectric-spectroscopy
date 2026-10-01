@@ -4,8 +4,11 @@ scipy
 pandas
 matplotlib
 scikit-rf
-# Adquisición (puerto serie USB del NanoVNA-F V2)
-pyserial
+# Contexto de medida, validación, incertidumbre, trazabilidad e informes
+rfmeasurement>=0.2.0
+# Comunicación USB con el NanoVNA-F V2
+pynanovna>=1.0
+pyserial>=3.5
 # Notebooks y pruebas
 jupyter
 ipykernel

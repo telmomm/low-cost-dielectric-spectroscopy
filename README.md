@@ -22,6 +22,10 @@ src/lcds/
   reference.py     modelos de los líquidos de referencia (agua de Kaatze; el resto, tras verificar)
   probe.py         conversión Γ → ε* con el modelo capacitivo (bilineal, tres patrones)
   metadata.py      guardado de cada barrido como .s1p en bruto + .json de metadatos
+  acquisition.py   barrido con el NanoVNA (pynanovna), contexto, validación y registro de trazabilidad
+  sol.py           SOL por software (formulación de nanovna-calibration); auxiliar, fuera de la cadena principal
+  uncertainty.py   modelo de medida de ε′ y σ, Monte Carlo, presupuesto por fuentes y paquete reproducible
+  provenance.py    registros de trazabilidad y grafo de una medida a sus barridos en bruto
   paths.py         rutas del repositorio
 tests/             pruebas del paquete con datos sintéticos
 scripts/           adquisición desde el VNA
@@ -37,8 +41,17 @@ PAPER/
   art3_clinico/    Planning.md
 ```
 
-Previsto y aún sin escribir: `src/lcds/acquisition.py` (depende de identificar el protocolo USB del
-equipo) y `src/lcds/uncertainty.py` (Monte Carlo, fase 5).
+## Librerías en las que se apoya
+
+| Librería | Papel |
+|---|---|
+| [pynanovna](https://pypi.org/project/pynanovna/) | Comunicación USB con el NanoVNA-F V2 |
+| [rfmeasurement](https://github.com/telmomm/rfmeasurement) | Contexto de la medida, validación de cada barrido, propagación de incertidumbre, presupuesto, trazabilidad e informes reproducibles (≥ 0.2.0) |
+| [scikit-rf](https://scikit-rf.readthedocs.io/) | Redes y Touchstone |
+
+`lcds` solo añade lo específico de la sonda coaxial. La comunicación y el uso de
+rfmeasurement siguen el proyecto [nanovna-calibration](https://github.com/telmomm/nanovna-calibration).
+La adquisición está probada con un equipo simulado, no todavía con el NanoVNA conectado.
 
 Cada revisión de un manuscrito crea una carpeta nueva (`v2/`, `v3/`…) con `main_original.tex`,
 `main_revised.tex` (latexdiff) y las respuestas a revisores `Reviewer_N.tex`.

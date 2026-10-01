@@ -37,8 +37,11 @@ class Medida:
     )
 
 
-def guardar_medida(f_hz, s11, medida, raiz=RAW, z0=50.0):
-    """Escribe <raiz>/<campaña>/<fecha>/<timestamp>_<muestra>_rNN.s1p y su .json. Devuelve la ruta del .s1p."""
+def guardar_medida(f_hz, s11, medida, raiz=RAW, z0=50.0, extra=None):
+    """Escribe <raiz>/<campaña>/<fecha>/<timestamp>_<muestra>_rNN.s1p y su .json. Devuelve la ruta del .s1p.
+
+    `extra` son campos adicionales para el .json (p. ej. el resumen de validación).
+    """
     f_hz = np.asarray(f_hz, dtype=float)
     s11 = np.asarray(s11, dtype=complex)
     if f_hz.shape != s11.shape:
@@ -59,5 +62,14 @@ def guardar_medida(f_hz, s11, medida, raiz=RAW, z0=50.0):
 
     info = asdict(medida)
     info.update(n_puntos=int(f_hz.size), f_inicio_hz=float(f_hz[0]), f_fin_hz=float(f_hz[-1]))
+    info.update(extra or {})
     meta.write_text(json.dumps(info, indent=2, ensure_ascii=False) + "\n")
     return s1p
+
+
+def cargar_medida(ruta_s1p):
+    """Lee un barrido guardado por `guardar_medida`. Devuelve (f_hz, s11, metadatos)."""
+    ruta_s1p = Path(ruta_s1p)
+    datos = np.loadtxt(ruta_s1p, comments=("!", "#"))
+    meta = json.loads(ruta_s1p.with_suffix(".json").read_text())
+    return datos[:, 0], datos[:, 1] + 1j * datos[:, 2], meta

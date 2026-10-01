@@ -41,10 +41,15 @@ El SOTA no invalida la línea, pero mueve el foco (detalle en `docs/SOTA/README.
 - [x] Primer commit
 - [ ] Subir al remoto (https://github.com/telmomm/low-cost-dielectric-spectroscopy), decidiendo antes su visibilidad
 - [ ] Inventario del equipo en `hardware/README.md`: número de serie, versión de firmware, kit SOL
-- [ ] **Identificar el protocolo USB del NanoVNA-F V2.** El documento de la línea lo da como compatible
-      con las herramientas del NanoVNA V2 (protocolo binario), pero el NanoVNA-F V2 puede usar la consola
-      de texto de la familia NanoVNA-F. De esto depende el driver de adquisición; se comprueba
-      conectando el equipo y probando NanoVNA-Saver
+- [x] Adquisición en `src/lcds/acquisition.py`: pynanovna para el USB y rfmeasurement para contexto y
+      validación, como en `nanovna-calibration`. pynanovna trata el NanoVNA-F V2 con la consola de
+      texto de la familia NanoVNA-F, no con el protocolo binario del NanoVNA V2
+- [x] Aclarado: el S11 que llega por USB ya viene corregido por la calibración cargada en el firmware
+- [ ] **Primera prueba con el equipo conectado**: que `lcds.acquisition.conectar()` lo detecta y que un
+      barrido por tramos se guarda bien. Comprobar también cómo aplica el firmware su calibración cuando
+      el tramo barrido no coincide con el intervalo en que se calibró (interpolación)
+- [x] rfmeasurement 0.2.0 desde PyPI (trazabilidad e informes reproducibles)
+- [ ] En rfmeasurement: corregir la regla de pasividad para redes de un puerto (ver `docs/DECISIONES.md`)
 - [ ] Biblioteca de Zotero para la línea y exportación automática a `PAPER/art1_metrologia/v1/references.bib`
 
 ## Fase 1 — Delimitar la novedad (octubre)
@@ -74,8 +79,16 @@ anota en [docs/DECISIONES.md](docs/DECISIONES.md).
 
 - [ ] Sonda v1 (SMA de panel o semirrígido de 0,141″), con dimensiones y fotos en `hardware/sonda/`
 - [ ] Soporte con el cable fijado; lista de materiales en `hardware/README.md`
-- [ ] Driver de adquisición `src/lcds/acquisition.py` y script `scripts/medir.py`, que guarden cada
-      barrido con `lcds.metadata.guardar_medida`
+- [ ] Script `scripts/medir.py` sobre `lcds.acquisition.medir`, para lanzar una serie desde la terminal
+- [x] SOL por software (`src/lcds/sol.py`), con la formulación de `nanovna-calibration`; queda como
+      herramienta auxiliar, porque la SOL de la cadena es la del firmware
+- [x] Trazabilidad (`src/lcds/provenance.py`): cada barrido guarda su registro y los resultados
+      derivados enlazan con él
+- [ ] Decidir el papel de la SOL en el presupuesto: con el modelo capacitivo, la calibración de la sonda
+      absorbe la SOL del firmware siempre que no cambie entre la terna y las muestras (ver
+      `docs/DECISIONES.md`)
+- [ ] Decidir los tramos del barrido: pynanovna da 101 puntos por barrido en este equipo, así que la
+      banda se cubre por tramos (ahora, cinco tramos por décadas)
 - [ ] Termometría de la muestra (termopar o Pt100) leída por el mismo script
 - [ ] Primera terna aire / cortocircuito / agua y un líquido de comprobación; notebook `00_cadena_minima`
 - [ ] Decidir el patrón de cortocircuito (lámina, papel de aluminio presionado u otro) y medir su repetibilidad
@@ -112,7 +125,11 @@ muestra por factor y orden aleatorizado. A partir de aquí, cualquier cambio se 
 
 ## Fase 5 — Análisis de incertidumbre (enero – febrero)
 
-- [ ] `src/lcds/uncertainty.py`: propagación por Monte Carlo (JCGM 101) de Γ a ε*
+- [x] Motor de incertidumbre (`src/lcds/uncertainty.py`) sobre `rfmeasurement.uncertainty`: modelo de
+      ε′ y σ por frecuencia, Monte Carlo (JCGM 101) y presupuesto por fuentes. Por ahora con las
+      fuentes de repetibilidad de Γ y la temperatura del agua
+- [ ] Añadir al modelo las fuentes que cuantifiquen los pilotos: deriva, cable, cortocircuito, modelo
+      de inversión y correlación entre parte real e imaginaria de Γ
 - [ ] Presupuesto de incertidumbre por fuentes, separando la calibración SOL de la calibración de la sonda
 - [ ] `src/lcds/probe.py`: añadir los modelos de radiación y de línea virtual y compararlos sobre los mismos datos
 - [ ] Figura clave: error ± incertidumbre expandida (k = 2) frente a frecuencia, con el rango útil sombreado
