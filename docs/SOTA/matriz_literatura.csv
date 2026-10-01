@@ -1,0 +1,13 @@
+clave,anio,doi,vna,sonda,banda_validada,materiales,modelo_inversion,comparacion_externa,error_reportado,presupuesto_incertidumbre,notas,leido
+Linha2025,2025,10.1109/tim.2025.3561426,pocketVNA,propia 2.2 mm,70 MHz - 3 GHz,tejidos y líquidos,gating temporal + ajuste Debye/Cole-Cole,sistema comercial,MAPE 0.66-4.35 % (eps) y 2.58-3.83 % (sigma) en bandas seleccionadas,por extraer,calibración válida ~5 min; competidor más cercano,no
+AriasRodriguez2025,2025,10.3390/s25133935,por extraer,SMA de bajo coste,hasta 6 GHz,líquidos; salinas; tejidos,capacitivo; radiación; línea virtual,sistema comercial,desviación entre sondas < 3 %,por extraer,radiación mejor en muestras biológicas; capacitivo falla > 3-4 GHz,no
+GonzalezTeruel2022,2022,10.1016/j.compag.2022.106847,NanoVNA (modelo por extraer),por extraer,1 - 500 MHz,líquidos de referencia; suelos,FEM + calibración OWL,VNA comercial,por extraer,por extraer,inestable > 700 MHz; ventana fiable 50-700 MHz,no
+Joof2024,2024,10.1109/siu61531.2024.10601009,pocket VNA,por extraer,por extraer,por extraer,estimación multifrecuencia,por extraer,por extraer,por extraer,congreso,no
+Garcia2025,2025,10.1109/gmepe/pahce65777.2025.11002836,por extraer,por extraer,por extraer,ablación de mama,por extraer,VNA de precisión,por extraer,por extraer,congreso,no
+MorenoMerin2026,2026,10.1109/icmwia67461.2026.11448512,por extraer,semirrígida 0.047 in,hasta 20 GHz,tejidos,por extraer,por extraer,por extraer,por extraer,congreso; mismo grupo que AriasRodriguez2025,no
+Zhu2024,2024,10.25165/j.ijabe.20241703.7170,mini-VNA,por extraer,por extraer,agroalimentario,por extraer,por extraer,por extraer,por extraer,,no
+Aboyewa2022,2022,10.1063/5.0095909,circuito de RF propio,por extraer,por extraer,por extraer,por extraer,por extraer,por extraer,por extraer,,no
+Aydin2019,2019,10.5829/ije.2019.32.03c.07,VNA de bajo coste propio,por extraer,por extraer,biomédico,por extraer,por extraer,por extraer,por extraer,,no
+Iaccheri2022,2022,10.3390/s22145277,por extraer,por extraer,por extraer,alimentos líquidos,por extraer,por extraer,por extraer,por extraer,,no
+Freitas2025,2025,10.1109/inscit66472.2025.11180972,VNA basado en SDR,por extraer,por extraer,por extraer,por extraer,por extraer,por extraer,por extraer,congreso,no
+arXiv2402.00498,2024,arXiv:2402.00498,NanoVNA V2 (verificar),por extraer,por extraer,por extraer,por extraer,por extraer,por extraer,por extraer,citado en el documento de la línea; no aparece en los informes,no

@@ -1,0 +1,12 @@
+# Análisis
+numpy
+scipy
+pandas
+matplotlib
+scikit-rf
+# Adquisición (puerto serie USB del NanoVNA-F V2)
+pyserial
+# Notebooks y pruebas
+jupyter
+ipykernel
+pytest

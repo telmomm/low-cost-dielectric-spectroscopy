@@ -1,0 +1,17 @@
+# Informes y artículos con copyright: no se redistribuyen (se versiona la síntesis en docs/SOTA/README.md)
+docs/SOTA/*.pdf
+PAPER/**/State of the Art/*.pdf
+# Derivados que se regeneran desde data/raw con los notebooks
+data/processed/*
+!data/processed/.gitkeep
+# Manuscrito: compilación
+PAPER/**/aux_files/
+*.drawio.bkp
+~$*
+# Entorno
+.venv/
+__pycache__/
+*.egg-info/
+.pytest_cache/
+.ipynb_checkpoints/
+.DS_Store
