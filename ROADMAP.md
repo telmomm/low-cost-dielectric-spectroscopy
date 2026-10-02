@@ -97,7 +97,8 @@ los trabajos de pago.
 
 ## Fase 2 — Cadena de medida mínima (octubre, en paralelo)
 
-- [ ] Sonda v1 (SMA de panel o semirrígido de 0,141″), con dimensiones y fotos en `hardware/sonda/`
+- [ ] Sonda v1 (lado N de un adaptador rígido SMA macho–N macho): comprar, rebajar la cara, medir
+      dimensiones y hacer fotos (`hardware/sonda/v1/README.md`)
 - [ ] Soporte con el cable fijado; lista de materiales en `hardware/README.md`
 - [x] Script `scripts/medir_sonda.py`: terna de la sonda y líquidos, de los .s1p a ε′ y σ con su
       incertidumbre y comparación con la referencia. Probado solo en simulado, a falta de la sonda
@@ -112,7 +113,8 @@ los trabajos de pago.
       banda se cubre por tramos (ahora, cinco tramos por décadas)
 - [ ] Termometría de la muestra (termopar o Pt100) leída por el mismo script
 - [ ] Primera terna aire / cortocircuito / agua y un líquido de comprobación; notebook `00_cadena_minima`
-- [ ] Decidir el patrón de cortocircuito (lámina, papel de aluminio presionado u otro) y medir su repetibilidad
+- [ ] Decidir el patrón de cortocircuito con `scripts/piloto_corto.py`: lámina de cobre frente a papel de
+      aluminio, repetibilidad al recolocarlo y sonda al aire (no necesita líquidos)
 
 **Salida:** un .s1p con metadatos se convierte en ε′ y σ con un solo comando y el resultado en un
 líquido no usado para calibrar es físicamente razonable.
