@@ -6,7 +6,7 @@ Todo lo que aparece aquí forma parte del método y se publicará como hardware 
 
 | Elemento | Identificación | Notas |
 |---|---|---|
-| VNA | NanoVNA-F V2 — n.º de serie: · firmware: | Anotar también el protocolo USB (ROADMAP, fase 0) |
+| VNA | NanoVNA-F V2 — n.º de serie: (comando `SN`) · firmware: 0.5.0, compilado el 24 de junio de 2022 | Consola de texto por USB (pynanovna). 101 puntos por barrido como máximo; sin control de ancho de banda de FI por USB. Ranuras de calibración guardadas: 0 (50 kHz–3 GHz), 1–3 (100 MHz–1,5 GHz), 4 (1–100 MHz), 5 (100 kHz–1,5 GHz) |
 | Kit SOL | | ¿Del fabricante o caracterizado? |
 | Cable | tipo: · longitud: | Fijado mecánicamente |
 | Termómetro | | Resolución e incertidumbre |

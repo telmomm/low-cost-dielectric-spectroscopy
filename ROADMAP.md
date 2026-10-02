@@ -25,8 +25,9 @@ El SOTA no invalida la línea, pero mueve el foco (detalle en `docs/SOTA/README.
 1. **La validación de un VNA barato con sonda coaxial ya está publicada**, incluso en tejido y en
    *IEEE TIM* (Linha 2025). El Artículo 1 tiene que venderse por el presupuesto de incertidumbre por
    fuentes y el protocolo, no por «funciona». De ahí la puerta G0, que antes no existía.
-2. **La banda útil esperable es más estrecha** de lo que sugiere el rango nominal: el antecedente con
-   NanoVNA sitúa el límite fiable en 500–700 MHz.
+2. **La banda útil no se puede anticipar con la literatura.** El límite de 500–700 MHz que citan los
+   informes es de un nanoVNA-H, que mide con armónicos por encima de 300 MHz; el NanoVNA-F V2 es otro
+   diseño y su banda útil hay que medirla (piloto de rango útil).
 3. **Dos factores nuevos en el diseño**: vida útil de la calibración (minutos) y modelo de inversión.
 4. **La sesión con un VNA de banco pasa de opcional a muy recomendable**: es lo que hacen todos los
    competidores directos.
@@ -39,41 +40,53 @@ El SOTA no invalida la línea, pero mueve el foco (detalle en `docs/SOTA/README.
 - [x] Síntesis del SOTA inicial y matriz de literatura
 - [x] `git init`
 - [x] Primer commit
-- [ ] Subir al remoto (https://github.com/telmomm/low-cost-dielectric-spectroscopy), decidiendo antes su visibilidad
+- [x] Subir al remoto (https://github.com/telmomm/low-cost-dielectric-spectroscopy), decidiendo antes su visibilidad
 - [ ] Inventario del equipo en `hardware/README.md`: número de serie, versión de firmware, kit SOL
 - [x] Adquisición en `src/lcds/acquisition.py`: pynanovna para el USB y rfmeasurement para contexto y
       validación, como en `nanovna-calibration`. pynanovna trata el NanoVNA-F V2 con la consola de
       texto de la familia NanoVNA-F, no con el protocolo binario del NanoVNA V2
 - [x] Aclarado: el S11 que llega por USB ya viene corregido por la calibración cargada en el firmware
-- [ ] **Primera prueba con el equipo conectado**: que `lcds.acquisition.conectar()` lo detecta y que un
-      barrido por tramos se guarda bien. Comprobar también cómo aplica el firmware su calibración cuando
-      el tramo barrido no coincide con el intervalo en que se calibró (interpolación)
+- [x] **Primera prueba con el equipo conectado** (2 de octubre): detectado como NanoVNA-F_V2, firmware
+      0.5.0; barrido por tramos, validación y guardado funcionan (501 puntos en unos 24 s)
+- [x] Banda de trabajo fijada en 50 kHz–1,45 GHz, la misma que en `nanovna-calibration`. Por encima de
+      1,5 GHz el equipo devuelve ceros exactos; queda fuera del alcance
+- [ ] **Calibración del firmware por tramos**: fuera del intervalo en que se calibró, el firmware da
+      valores sin sentido (|S11| hasta 2 entre 1 y 100 MHz). Decidir entre calibrar en el equipo sobre la
+      banda completa o corregir por software tramo a tramo (`scripts/prueba_sol.py`)
+- [ ] Ejecutar `scripts/prueba_sol.py` con los patrones del kit
 - [x] rfmeasurement 0.2.0 desde PyPI (trazabilidad e informes reproducibles)
 - [ ] En rfmeasurement: corregir la regla de pasividad para redes de un puerto (ver `docs/DECISIONES.md`)
 - [ ] Biblioteca de Zotero para la línea y exportación automática a `PAPER/art1_metrologia/v1/references.bib`
 
 ## Fase 1 — Delimitar la novedad (octubre)
 
-- [ ] Búsqueda en Scopus y WoS, guardando cadena, fecha y número de resultados en `docs/SOTA/busqueda.md`.
-      Cadena de partida:
-      `("open-ended coaxial" OR "coaxial probe") AND ("low-cost" OR "low cost" OR NanoVNA OR "pocket VNA" OR "portable VNA") AND (permittivity OR dielectric)`
-      y una segunda con `AND (uncertainty OR GUM OR "Monte Carlo")`
-- [ ] Leer completos los 10 competidores directos y rellenar `docs/SOTA/matriz_literatura.csv`.
-      Pregunta que hay que responder en cada uno: **¿reporta un presupuesto de incertidumbre por
-      fuentes, o solo un error frente a una referencia?**
-- [ ] Comprobar en la fuente primaria las cifras del SOTA que condicionan el diseño (banda del NanoVNA,
-      vida de la calibración, sensibilidad a la presión)
-- [ ] Resolver las referencias «(verificar)»: Peyman 2007, informe NPL MAT 23, arXiv:2402.00498
-- [ ] Verificar los coeficientes de Kaatze (1989) de `src/lcds/reference.py` y añadir metanol, etanol y
-      NaCl con sus fuentes
-- [ ] Reescribir la sección de motivación del documento de la línea
-- [ ] Pasar `/phd-skills:gaps` sobre el enunciado de novedad como segunda opinión
+Ejecutada el 1 de octubre de 2026; resultado en `docs/SOTA/README.md`, sección 0.
+
+- [x] Búsqueda con las cadenas previstas en OpenAlex, PubMed y arXiv (`docs/SOTA/busqueda.md`)
+- [ ] Repetir las cadenas Q1 y Q2 en Scopus y WoS, que piden acceso institucional
+- [x] Extraer a `docs/SOTA/matriz_literatura.csv` los 20 trabajos con VNA de bajo coste: 10 a texto
+      completo y 10 por el resumen. Ninguno reporta un presupuesto de incertidumbre por fuentes
+- [ ] Conseguir y leer los 10 trabajos de pago (sobre todo Rangel 2025, Joof 2024 y Moreno-Merín 2026)
+- [x] Comprobar en la fuente primaria las cifras que condicionan el diseño: presión y deshidratación,
+      correctas; vida de la calibración, correcta pero sin cuantificar; banda del NanoVNA, no trasladable
+      a nuestro equipo
+- [x] Resolver las referencias «(verificar)»: Peyman 2007, informe NPL MAT 23 (2012) y arXiv:2402.00498
+- [x] Coeficientes de Kaatze (1989) cotejados con una fuente secundaria; metanol y etanol añadidos desde
+      el informe NPL, con prueba contra sus tablas
+- [ ] Modelo de las disoluciones de NaCl: falta conseguir Peyman et al. (2007)
+- [ ] Cotejar los coeficientes del agua con el artículo original de Kaatze
+- [x] Reescribir la sección de motivación del documento de la línea
+- [x] Segunda pasada con `/phd-skills:gaps` sobre el enunciado de novedad: no aparece ningún trabajo
+      que lo contradiga (confianza media)
 
 **G0 — ¿Hay novedad defendible?** Se continúa si ningún trabajo publica ya un presupuesto de
 incertidumbre por fuentes (GUM o Monte Carlo) para un sistema NanoVNA + OECP en materiales biológicos.
 Si existe, se reorienta el Artículo 1 hacia lo que ese trabajo deje sin cubrir (variabilidad entre
 unidades, factores de uso real, estándar de metadatos) antes de fabricar nada más. La decisión se
 anota en [docs/DECISIONES.md](docs/DECISIONES.md).
+
+**Estado: superada de forma provisional.** Se confirma al repetir la búsqueda en Scopus y WoS y leer
+los trabajos de pago.
 
 ## Fase 2 — Cadena de medida mínima (octubre, en paralelo)
 

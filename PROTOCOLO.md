@@ -64,7 +64,7 @@ Regla fija: **el líquido usado para calibrar la sonda nunca se usa para validar
 | Unidad de VNA (si se consigue) | 2–3 unidades | variabilidad entre unidades | — |
 | VNA de banco (si se consigue) | una sesión con las mismas muestras | comparación externa | — |
 
-Barrido de 50 kHz a 3 GHz en todas las medidas. El orden de los líquidos se aleatoriza en cada sesión.
+Barrido de 50 kHz a 1,45 GHz en todas las medidas. El orden de los líquidos se aleatoriza en cada sesión.
 
 ## 6. Procedimiento de una sesión
 

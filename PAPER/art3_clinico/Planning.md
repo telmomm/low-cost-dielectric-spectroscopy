@@ -8,8 +8,10 @@ paralelo es la búsqueda de un colaborador clínico.
 - **A evitar como objetivo principal:** glucosa no invasiva.
 - **Requisitos:** comité de ética, rediseño del sensor para piel, protocolo clínico y modelo predictivo
   reportado según TRIPOD+AI.
-- **Apoyo en el SOTA:** no hay trabajos de bajo coste in vivo con comparación comercial ni con
-  incertidumbre cuantificada ([../../docs/SOTA/README.md](../../docs/SOTA/README.md), sección 2).
+- **Antecedentes que hay que leer antes de concretarlo:** Schiavoni et al. (2023), nanoVNA con sonda
+  coaxial in vivo en lesiones de piel de 11 voluntarios, y Cataldo et al. (2022), hidratación de la piel
+  con un VNA portátil. Ya hay bajo coste in vivo; lo que no hay es incertidumbre cuantificada
+  ([../../docs/SOTA/README.md](../../docs/SOTA/README.md), sección 0).
 
 ## Contactos
 

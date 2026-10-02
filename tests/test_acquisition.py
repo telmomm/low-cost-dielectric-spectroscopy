@@ -62,6 +62,12 @@ def test_un_s11_no_pasivo_se_guarda_anotado(tmp_path):
     assert json.loads(ruta.with_suffix(".json").read_text())["validacion"]["physics.passivity"] == "fail"
 
 
+def test_los_ceros_exactos_se_rechazan():
+    vna = VNAFalso(s11=lambda f: np.where(f > 5e6, 0, 0.5 + 0j))
+    with pytest.raises(RuntimeError, match="ceros"):
+        barrer(vna, segmentos=((1e6, 10e6),), n_puntos=11)
+
+
 def test_un_barrido_con_valores_no_finitos_no_se_guarda(tmp_path):
     medida = Medida(campana="prueba", muestra="agua")
     vna = VNAFalso(s11=lambda f: np.full(f.size, np.nan + 0j))

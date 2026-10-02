@@ -8,7 +8,7 @@ from lcds.reference import conductivity, debye, water
 from lcds.acquisition import medir
 from lcds.metadata import Medida
 from lcds.provenance import registrar
-from lcds.uncertainty import evaluar, informe, metadatos, modelo
+from lcds.uncertainty import evaluar, informe, metadatos, modelo, modelo_sol
 from test_acquisition import VNAFalso
 
 F = 500e6
@@ -78,3 +78,22 @@ def test_paquete_reproducible_de_un_resultado(tmp_path):
     assert paquete["provenance"]["external_sources"] == []
     assert sum(c["porcentaje_varianza"] for c in paquete["presupuesto"]) == pytest.approx(100, abs=0.1)
     assert "eps'" in informe(medicion, ev, registros=(conversion,))
+
+
+def test_incertidumbre_de_un_gamma_corregido_por_sol():
+    ed, er, es = 0.05 - 0.02j, 0.8 * np.exp(-0.7j), 0.1 + 0.07j
+    medido = lambda g: (ed + er * g) / (1 - es * g)
+    real = 0.3 - 0.4j
+    gammas = {"abierto": medido(1), "corto": medido(-1), "carga": medido(0), "medida": medido(real)}
+    u = {k: 1e-4 * (1 + 1j) for k in gammas}
+
+    for parte, esperado in (("re", real.real), ("im", real.imag)):
+        ev = evaluar(modelo_sol(gammas, u, parte=parte, f_hz=1e9), n_muestras=4000)
+        assert ev.resultado.value == pytest.approx(esperado, abs=3 * ev.resultado.standard_uncertainty)
+        assert ev.resultado.standard_uncertainty == pytest.approx(ev.lineal.standard_uncertainty, rel=0.1)
+        assert 5e-5 < ev.resultado.standard_uncertainty < 1e-3
+
+    # si solo es incierta la medida, es ella la que domina el presupuesto
+    u_solo_medida = {k: (1e-3 if k == "medida" else 1e-7) * (1 + 1j) for k in gammas}
+    presupuesto = evaluar(modelo_sol(gammas, u_solo_medida), n_muestras=300).presupuesto
+    assert presupuesto.ranked[0].source.name.startswith("gamma_medida")

@@ -13,6 +13,7 @@ identifica qué calibración del firmware estaba cargada. Esa calibración no de
 la terna de la sonda (corto, aire, agua) y las muestras que se convierten con ella.
 """
 
+import logging
 from datetime import datetime, timezone
 
 import numpy as np
@@ -27,9 +28,14 @@ from .provenance import a_dict, registrar
 
 INSTRUMENTO = "NanoVNA-F V2"
 
-# pynanovna limita este equipo a 101 puntos por barrido, así que la banda completa se cubre por
-# tramos. Provisional: la configuración definitiva se fija en la puerta G1 del ROADMAP.
-SEGMENTOS = ((50e3, 1e6), (1e6, 10e6), (10e6, 100e6), (100e6, 1e9), (1e9, 3e9))
+# Banda de trabajo, la misma que en nanovna-calibration. Por encima de 1,5 GHz este equipo
+# (firmware 0.5.0) devuelve ceros en lugar de datos.
+F_START_HZ = 50e3
+F_STOP_HZ = 1.45e9
+
+# pynanovna limita este equipo a 101 puntos por barrido, así que la banda se cubre por tramos.
+# Los cortes entre tramos son provisionales: se fijan en la puerta G1 del ROADMAP.
+SEGMENTOS = ((F_START_HZ, 1e6), (1e6, 10e6), (10e6, 100e6), (100e6, 1e9), (1e9, F_STOP_HZ))
 PUNTOS_POR_SEGMENTO = 101
 
 
@@ -89,7 +95,27 @@ def conectar(puerto=None):
             "pynanovna encontró el puerto pero no pudo inicializar el equipo. "
             "Cierra otros programas que lo estén usando y vuelve a intentarlo."
         )
+    # El comando `scan` del NanoVNA-F V2 tarda 1,5-3 s por tramo y pynanovna solo espera unos 2 s
+    # con su tiempo de lectura por defecto (0,05 s): con 0,25 s el margen sube a unos 10 s.
+    vna.iface.timeout = 0.25
+    # pynanovna avisa en cada barrido de que no tiene una calibración propia cargada; aquí no se
+    # usa (la corrección es la del firmware y, si acaso, lcds.sol), así que se silencia.
+    for manejador in logging.getLogger().handlers:
+        manejador.addFilter(lambda registro: "calibrat" not in registro.getMessage())
     return vna
+
+
+def _consulta(vna, comando):
+    """Respuesta del equipo a un comando de su consola, o None si no se puede preguntar."""
+    try:
+        return " ".join(vna.vna.exec_command(comando)) or None
+    except Exception:
+        return None
+
+
+def calibracion_firmware(vna):
+    """Estado de la calibración cargada en el equipo, tal como lo da su comando `cal`."""
+    return _consulta(vna, "cal")
 
 
 def desconectar(vna):
@@ -112,7 +138,15 @@ def barrer(vna, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO):
         s11.append(np.asarray(s11_tramo, dtype=complex))
     f, s11 = np.concatenate(f), np.concatenate(s11)
     f, unicos = np.unique(f, return_index=True)  # los extremos de tramos contiguos coinciden
-    return f, s11[unicos]
+    s11 = s11[unicos]
+    if np.any(s11 == 0):
+        # Un cero exacto no es una medida: el firmware 0.5.0 los devuelve por encima de 1,5 GHz
+        nulos = f[s11 == 0]
+        raise RuntimeError(
+            f"El equipo devuelve ceros en {nulos.size} puntos, de {nulos[0] / 1e6:g} a "
+            f"{nulos[-1] / 1e6:g} MHz. Acota los tramos o revisa la calibración cargada."
+        )
+    return f, s11
 
 
 def a_measurement(f_hz, s11, medida):
@@ -160,7 +194,10 @@ def medir(vna, medida, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO, raiz=R
     """
     if medida.vna_serie is None or medida.vna_firmware is None:
         info = vna.info()
-        medida.vna_serie = medida.vna_serie or str(info.get("Serial Number"))
+        serie = str(info.get("Serial Number"))
+        if serie == "NOT SUPPORTED":  # pynanovna no lo lee en este equipo, pero el firmware tiene `SN`
+            serie = _consulta(vna, "SN") or serie
+        medida.vna_serie = medida.vna_serie or serie
         medida.vna_firmware = medida.vna_firmware or str(info.get("Version"))
 
     f_hz, s11 = barrer(vna, segmentos, n_puntos)
@@ -181,6 +218,7 @@ def medir(vna, medida, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO, raiz=R
             "segmentos_hz": [list(tramo) for tramo in segmentos],
             "puntos_por_segmento": n_puntos,
             "cal_sol_id": medida.cal_sol_id,
+            "cal_firmware": calibracion_firmware(vna),
         },
         notas="S11 corregido por la calibración SOL cargada en el firmware; sin corrección por software",
     )

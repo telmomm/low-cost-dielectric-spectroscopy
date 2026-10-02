@@ -7,10 +7,19 @@ Diseño completo en [../../PROTOCOLO.md](../../PROTOCOLO.md). Marco de reporte: 
 
 ## Enunciado de novedad
 
-Pendiente de la puerta G0. Borrador: *primer presupuesto de incertidumbre por fuentes de un sistema
-NanoVNA + sonda coaxial para materiales biológicos, con el rango útil derivado de él y con hardware,
-datos y código abiertos.* Los trabajos frente a los que hay que defenderlo están en
-[../../docs/SOTA/README.md](../../docs/SOTA/README.md).
+*Primer presupuesto de incertidumbre por fuentes (GUM y Monte Carlo) de un sistema NanoVNA con sonda
+coaxial de extremo abierto para materiales biológicos, con la banda útil derivada de ese presupuesto y
+con hardware, datos, código y trazabilidad abiertos.*
+
+Puerta G0 superada de forma provisional el 1 de octubre de 2026
+([../../docs/SOTA/README.md](../../docs/SOTA/README.md), sección 0). Frente a quién hay que defenderlo:
+
+| Trabajo | Qué hace | Qué deja sin hacer |
+|---|---|---|
+| Linha 2025 (*IEEE TIM*) | pocketVNA en tejido ex vivo; MAPE frente a un sistema comercial | Error sobre datos filtrados y ajustados; sin fuentes separadas; vida de la calibración sin cuantificar |
+| Małek 2026 (*IEEE TMTT*) | NanoVNA V2.2 con sensor planar; incertidumbre de tipo A | Dos componentes; sin tipo B ni Monte Carlo; no es sonda coaxial ni material biológico |
+| González-Teruel 2022 | nanoVNA-H con sonda coaxial en suelos | Error frente a referencia solo hasta 500 MHz; otro hardware |
+| Arias-Rodríguez 2025 (*Sensors*) | Sonda SMA barata, tres modelos, reproducibilidad | El VNA no es de bajo coste; sin presupuesto |
 
 ## Revista objetivo
 

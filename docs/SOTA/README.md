@@ -12,6 +12,67 @@ los PDF no se versionan):
 > los artículos: hay que comprobarlas en la fuente primaria antes de citarlas. La columna `leido` de
 > [matriz_literatura.csv](matriz_literatura.csv) registra qué se ha verificado.
 
+## 0. Resultado de la fase 1 (lectura de las fuentes primarias)
+
+Las secciones 1 a 3 resumen los informes de Consensus tal como llegaron. Esta sección recoge lo que
+cambia tras leer los artículos; donde haya contradicción, manda esta. Búsqueda en
+[busqueda.md](busqueda.md) y extracción en [matriz_literatura.csv](matriz_literatura.csv).
+
+**Puerta G0: superada, de forma provisional.** De los 20 trabajos con VNA de bajo coste retenidos,
+ninguno publica un presupuesto de incertidumbre por fuentes (GUM o Monte Carlo) para una sonda coaxial.
+Es provisional por dos motivos: la búsqueda se ha hecho en índices abiertos y no en Scopus ni WoS, y
+diez de los trabajos solo se han podido leer por el resumen.
+
+### Cifras comprobadas
+
+| Cifra de los informes | Fuente primaria | Resultado |
+|---|---|---|
+| Presión: −0,31 % y −0,32 % por kPa, de 7,7 a 77 kPa | Maenhout 2020a | Correcta: −0,31 ± 0,09 % (ε′) y −0,32 ± 0,14 % (ε″) por kPa, hígado bovino, 0,5–20 GHz |
+| Deshidratación: hasta 9 % en 35 min | Maenhout 2020b | Correcta: hígado porcino; con el montaje modificado el cambio se reduce a la mitad |
+| Calibración válida unos 5 min | Linha 2025 | Correcta, pero es una observación empírica sin cuantificar, y del pocketVNA 2.0 |
+| MAPE «desde 0,66 %» | Linha 2025 | Correcta con matices: es el mejor caso (corteza renal, por encima de 200 MHz) y sobre datos **ajustados** a un modelo de Cole-Cole tras un filtrado temporal, no sobre la medida directa |
+| NanoVNA fiable de 1 a 500 MHz, inestable por encima de 700 MHz | González-Teruel 2022 | Engañosa: ver abajo |
+
+### Correcciones a los informes
+
+1. **El límite de 500–700 MHz no se traslada a nuestro equipo.** González-Teruel usó un nanoVNA-H, que
+   por encima de 300 MHz mide con armónicos, y lo comparó con un Agilent 4395A que solo llega a
+   500 MHz: «comparable hasta 500 MHz» significa que ahí se acaba la referencia. El ruido por encima de
+   700 MHz es de ese hardware. El NanoVNA-F V2 es otro diseño; su banda útil hay que medirla.
+2. **Arias-Rodríguez 2025 no valida un VNA barato.** Lo barato es la sonda SMA; las medidas son con un
+   Keysight P9374B y, en parte, con un PicoVNA 106. No es un competidor en la clase NanoVNA.
+3. **Linha 2025 usa el modelo de línea virtual con dos patrones** (aire y agua), no el capacitivo, y su
+   exactitud depende del posprocesado (filtrado temporal y ajuste a un modelo de relajación).
+4. **Ya hay trabajo de bajo coste in vivo**, al contrario de lo que indicaban las matrices de cobertura:
+   Schiavoni 2023 mide piel en 11 voluntarios con un nanoVNA y una sonda coaxial truncada, y Cataldo 2022
+   aborda la hidratación de la piel con un VNA portátil. Afecta al planteamiento del Artículo 3.
+5. **Aydın 2019 no mide permitividad** (caracteriza antenas con un miniVNA). Se excluye.
+6. **«García 2025» es Rangel et al.**: NanoVNA V2 Plus4 frente a un Agilent E5071B.
+
+### El antecedente más cercano en incertidumbre
+
+Małek et al. (2026, *IEEE TMTT*) usan un NanoVNA V2.2 con un sensor planar para aceites. Incluyen un
+análisis de incertidumbre, pero solo de tipo A y con dos componentes (instrumento, a partir de 31
+repeticiones, e imperfecciones físicas); descartan el tipo B por coste de cálculo y señalan que la hoja
+de datos del NanoVNA no trae presupuesto de incertidumbre. No es una sonda coaxial ni un material
+biológico. Es el trabajo que hay que citar y superar.
+
+### Incertidumbre de la sonda coaxial con equipo de banco
+
+El análisis que se quiere hacer ya existe para VNA de laboratorio: Gabriel y Peyman (2006) y, sobre
+todo, Bao et al. (2021, *IEEE TMTT*), que cuantifican la incertidumbre del líquido de calibración, la
+deriva y la posición de la sonda. El método no es la novedad; lo es aplicarlo a un equipo de esta clase,
+donde la deriva y el ruido pesan mucho más. Hay además una librería abierta para la sonda coaxial,
+PyOECP (Yoon et al., 2022), que conviene revisar antes de ampliar `lcds.probe` con más modelos.
+
+### Enunciado de novedad que se sostiene
+
+Los trabajos de bajo coste reportan un error frente a una referencia (MAPE, RMSE, desviación entre
+sondas) y, como mucho, repetibilidad. Ninguno separa las fuentes, propaga la incertidumbre a ε* ni
+deriva de ella la banda útil. Además, el único con equipo de esta clase en tejido (Linha 2025) reporta
+el error tras ajustar a un modelo de relajación, lo que suaviza el ruido y no describe la incertidumbre
+de una medida directa. Eso es lo que aporta el Artículo 1.
+
 ## 1. Qué dice el estado del arte
 
 1. **El bajo coste ya está validado en condiciones controladas.** Varios trabajos comparan un VNA
@@ -83,8 +144,9 @@ Orden de lectura para la fase 1 del [ROADMAP](../../ROADMAP.md). Los DOI procede
 6. Moreno-Merín et al. (2026), ICMWIA — sonda semirrígida de 0,047″ hasta 20 GHz. [10.1109/icmwia67461.2026.11448512](https://doi.org/10.1109/icmwia67461.2026.11448512)
 7. Zhu et al. (2024), *Int. J. Agric. Biol. Eng.* — espectrómetro portátil con mini-VNA. [10.25165/j.ijabe.20241703.7170](https://doi.org/10.25165/j.ijabe.20241703.7170)
 8. Aboyewa et al. (2022), *Rev. Sci. Instrum.* 93 — circuito de RF sencillo para OECP. [10.1063/5.0095909](https://doi.org/10.1063/5.0095909)
-9. Aydın (2019), *Int. J. Eng.* — VNA de bajo coste para aplicaciones biomédicas. [10.5829/ije.2019.32.03c.07](https://doi.org/10.5829/ije.2019.32.03c.07)
-10. arXiv:2402.00498 — NanoVNA V2 para espectroscopía dieléctrica (citado en el documento de la línea; no aparece en los informes; **verificar**).
+9. Małek et al. (2026), *IEEE TMTT* — NanoVNA V2.2 con sensor planar y análisis de incertidumbre de tipo A. [10.1109/tmtt.2026.3664936](https://doi.org/10.1109/tmtt.2026.3664936)
+10. Erkoreka y Martinez-Perdiguero (2024), arXiv:2402.00498 — NanoVNA V2 con condensador de placas paralelas, cristal líquido, 10 MHz–1 GHz.
+11. Schiavoni et al. (2023), *IEEE Access* — nanoVNA con sonda coaxial in vivo en piel. [10.1109/access.2023.3243843](https://doi.org/10.1109/access.2023.3243843)
 
 **Incertidumbre y protocolo**
 
@@ -114,8 +176,8 @@ Orden de lectura para la fase 1 del [ROADMAP](../../ROADMAP.md). Los DOI procede
 
 ## 5. Pendiente de esta carpeta
 
-- Búsqueda sistemática en Scopus y WoS (cadenas y fechas en el ROADMAP, fase 1). Los informes de
-  Consensus no sustituyen a una búsqueda reproducible.
-- Completar [matriz_literatura.csv](matriz_literatura.csv) leyendo los competidores directos.
-- Resolver las referencias marcadas con «(verificar)» en el documento de la línea: Peyman (2007),
-  informe NPL MAT 23 y arXiv:2402.00498.
+- Repetir las cadenas Q1 y Q2 en Scopus y WoS ([busqueda.md](busqueda.md)).
+- Conseguir y leer los diez trabajos de pago que solo se han visto por el resumen; sobre todo Rangel
+  2025 (NanoVNA V2 Plus4), Joof 2024 y Moreno-Merín 2026.
+- Conseguir Peyman et al. (2007) para implementar el modelo de las disoluciones de NaCl, y el artículo
+  original de Kaatze (1989) para cerrar la comprobación del agua.

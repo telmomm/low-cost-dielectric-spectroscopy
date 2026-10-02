@@ -32,6 +32,7 @@ from rfmeasurement.uncertainty import (
 from .probe import epsilon_bilinear
 from .provenance import registrar
 from .reference import conductivity, water
+from .sol import corregir, terminos_error
 
 GAMMAS = ("muestra", "corto", "aire", "agua")
 MAGNITUDES = {
@@ -94,6 +95,52 @@ def modelo(f_hz, gammas, u_gammas, temp_agua_c, u_temp_agua_c, magnitud="eps_rea
         assumptions=(
             "Modelo capacitivo de la sonda (conversión bilineal con corto, aire y agua); agua según "
             "Kaatze (1989); fuentes independientes; sin deriva, cable ni error de modelo."
+        ),
+    )
+
+
+GAMMAS_SOL = ("abierto", "corto", "carga", "medida")
+
+
+def modelo_sol(gammas, u_gammas, parte="re", f_hz=None):
+    """Modelo de medida de la parte real o imaginaria de un Gamma corregido por SOL, a una frecuencia.
+
+    gammas, u_gammas  dicts con las claves de GAMMAS_SOL: los tres patrones medidos y la medida a
+                      corregir, con su incertidumbre típica compleja (real e imaginaria por
+                      separado). Para un patrón promediado, la de la media.
+    """
+    fuentes = tuple(
+        UncertaintySource(
+            name=f"gamma_{clave}_{p}",
+            description=f"Parte {p} del coeficiente de reflexión medido: {clave}",
+            uncertainty_type=UncertaintyType.TYPE_A,
+            distribution=Distribution.NORMAL,
+            standard_uncertainty=float(getattr(u_gammas[clave], atributo)),
+            unit="1",
+            nominal_value=float(getattr(gammas[clave], atributo)),
+            assumptions="Repetibilidad de barridos; partes real e imaginaria independientes",
+        )
+        for clave in GAMMAS_SOL
+        for p, atributo in (("re", "real"), ("im", "imag"))
+    )
+
+    def funcion(v):
+        g = {c: np.array([complex(v[f"gamma_{c}_re"], v[f"gamma_{c}_im"])]) for c in GAMMAS_SOL}
+        corregido = corregir(g["medida"], *terminos_error(g["abierto"], g["corto"], g["carga"]))[0]
+        return float(corregido.real if parte == "re" else corregido.imag)
+
+    return UncertaintyModel(
+        measurand=Measurand(
+            name=f"{'Re' if parte == 're' else 'Im'}(Gamma corregido)",
+            definition="Coeficiente de reflexión tras la corrección SOL de un puerto",
+            unit="1",
+            frequency_hz=None if f_hz is None else float(f_hz),
+        ),
+        function=funcion,
+        sources=fuentes,
+        assumptions=(
+            "Patrones SOL ideales (su definición no se incluye como fuente); fuentes independientes; "
+            "solo repetibilidad: sin deriva ni reconexión entre los patrones y la medida."
         ),
     )
 
