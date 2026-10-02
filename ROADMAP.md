@@ -58,7 +58,9 @@ El SOTA no invalida la línea, pero mueve el foco (detalle en `docs/SOTA/README.
       dentro del tramo (`docs/cuaderno/2026-10-02_saltos_y_deriva.md`)
 - [x] Saltos con 51 puntos por tramo: van con la posición relativa dentro del tramo (20–35 % de su
       recorrido), no con el número de punto ni con una frecuencia fija
-- [ ] Saltos: probar a medir con dos juegos de tramos desplazados y combinar, para esquivar la zona afectada
+- [x] Saltos con dos juegos de tramos desplazados: la combinación los reduce a la mitad y elimina las
+      frecuencias peores, sobre todo por encima de 100 MHz
+- [ ] Llevar los dos juegos de tramos y la mediana de repeticiones a la adquisición
 - [x] rfmeasurement 0.2.0 desde PyPI (trazabilidad e informes reproducibles)
 - [ ] En rfmeasurement: corregir la regla de pasividad para redes de un puerto (ver `docs/DECISIONES.md`)
 - [ ] Biblioteca de Zotero para la línea y exportación automática a `PAPER/art1_metrologia/v1/references.bib`

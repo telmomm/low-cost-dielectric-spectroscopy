@@ -83,3 +83,35 @@ frecuencias de inicio y fin. Un barrido completo tarda unos 24 s con 101 puntos 
 **Consecuencia práctica.** Como la zona depende de dónde empieza y acaba cada tramo, se puede esquivar
 midiendo cada frecuencia en dos tramos desplazados entre sí, de modo que lo que cae en la zona mala de
 uno quede en la zona limpia del otro. Cuesta el doble de tiempo de barrido.
+
+## Dos juegos de tramos desplazados (`piloto_saltos`, `saltos_tramos_20261002T103052Z`, 10:30–10:41 UTC)
+
+Abierto fijo. 12 barridos con el juego A (cortes en 1, 10, 100 y 1000 MHz) y 12 con el juego B (cortes
+en 0,3, 3, 30 y 300 MHz), alternados. Umbral de salto: 0,03.
+
+| | Juego A | Juego B | Combinación |
+|---|---|---|---|
+| Puntos con salto | 1,03 % | 0,88 % | 0,55 % |
+| Dentro de su zona (15–40 % de cada tramo) | 2,18 % | 2,05 % | — |
+| Fuera de su zona | 0,63 % | 0,47 % | — |
+| La zona de A, medida con cada juego | 2,18 % | 0,53 % | — |
+| La zona de B, medida con cada juego | 0,95 % | 2,05 % | — |
+| Peor frecuencia (barridos con salto) | 33 % | 50 % | 17 % |
+| Frecuencias con salto en ≥ 25 % de los barridos | 4 | — | 0 |
+
+La combinación toma de cada juego los puntos de fuera de su zona: 742 frecuencias en lugar de 501.
+
+- **Por encima de 100 MHz la zona se mueve con el tramo.** En A los saltos están en 350–415 MHz y en
+  1125–1160 MHz; en B esas frecuencias salen limpias y los saltos pasan a 530–760 MHz, que es el
+  20–40 % de su tramo de 300–1450 MHz. Ahí están las tasas altas, y ahí el desplazamiento funciona.
+- **Por debajo de 100 MHz el patrón es menos claro.** Aparecen saltos en 1–3 MHz y en 55–90 MHz con los
+  dos juegos, con tasas bajas (uno o dos barridos de doce por frecuencia). Con doce barridos no se
+  puede decir si dependen de la frecuencia.
+- **La combinación reduce los saltos a la mitad y elimina las frecuencias peores**, pero no los quita
+  todos: queda un 0,55 %, con un máximo del 17 % en 1,41 MHz.
+
+Con más estadística, los 61 barridos del corto del piloto de deriva (juego A) dan la misma imagen: un
+1,08 % de puntos con salto, concentrados en el 20–40 % de los tramos de 100–1000 MHz (8–13 %) y
+1000–1450 MHz (6–10 %), y mucho menos en los tramos bajos. La frecuencia peor, 361 MHz, salta en el
+46 % de los barridos: con el juego A solo, la mediana de cinco repeticiones caería en un salto el 42 %
+de las veces en ese punto. Tras combinar, con una tasa máxima del 17 %, esa probabilidad baja al 4 %.
