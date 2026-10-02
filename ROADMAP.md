@@ -54,7 +54,11 @@ El SOTA no invalida la línea, pero mueve el foco (detalle en `docs/SOTA/README.
       firmware, que fuera de su intervalo da valores sin sentido
 - [x] `scripts/prueba_sol.py` ejecutado con los patrones del kit (2 de octubre): la SOL por software
       funciona en toda la banda; resultado en `docs/cuaderno/2026-10-02_prueba_sol.md`
-- [ ] Investigar los saltos esporádicos que aparecen en un 7–9 % de los puntos con abierto y corto
+- [x] Prueba de saltos: pausar el barrido no los quita; son saltos de fase ligados a la posición
+      dentro del tramo (`docs/cuaderno/2026-10-02_saltos_y_deriva.md`)
+- [x] Saltos con 51 puntos por tramo: van con la posición relativa dentro del tramo (20–35 % de su
+      recorrido), no con el número de punto ni con una frecuencia fija
+- [ ] Saltos: probar a medir con dos juegos de tramos desplazados y combinar, para esquivar la zona afectada
 - [x] rfmeasurement 0.2.0 desde PyPI (trazabilidad e informes reproducibles)
 - [ ] En rfmeasurement: corregir la regla de pasividad para redes de un puerto (ver `docs/DECISIONES.md`)
 - [ ] Biblioteca de Zotero para la línea y exportación automática a `PAPER/art1_metrologia/v1/references.bib`
@@ -93,7 +97,8 @@ los trabajos de pago.
 
 - [ ] Sonda v1 (SMA de panel o semirrígido de 0,141″), con dimensiones y fotos en `hardware/sonda/`
 - [ ] Soporte con el cable fijado; lista de materiales en `hardware/README.md`
-- [ ] Script `scripts/medir.py` sobre `lcds.acquisition.medir`, para lanzar una serie desde la terminal
+- [x] Script `scripts/medir_sonda.py`: terna de la sonda y líquidos, de los .s1p a ε′ y σ con su
+      incertidumbre y comparación con la referencia. Probado solo en simulado, a falta de la sonda
 - [x] SOL por software (`src/lcds/sol.py`), con la formulación de `nanovna-calibration`; queda como
       herramienta auxiliar, porque la SOL de la cadena es la del firmware
 - [x] Trazabilidad (`src/lcds/provenance.py`): cada barrido guarda su registro y los resultados
@@ -114,6 +119,8 @@ líquido no usado para calibrar es físicamente razonable.
 
 Cada piloto es un notebook y una entrada en `docs/cuaderno/`.
 
+- [x] **Deriva sin sonda** (`scripts/piloto_deriva.py`), con el equipo ya caliente: sin deriva apreciable
+      en una hora por encima de 10 MHz; deriva lenta por debajo (de −60 a −53 dB)
 - [ ] **Deriva tras el encendido** (3 h, barridos cada 10–15 min) → tiempo de calentamiento. `01_piloto_deriva`
 - [ ] **Vida útil de la calibración** (barridos cada 30–60 s durante 30 min tras calibrar) → cuántas
       medidas caben entre recalibraciones. `02_piloto_vida_calibracion`

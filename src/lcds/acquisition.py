@@ -128,14 +128,24 @@ def desconectar(vna):
             pass
 
 
-def barrer(vna, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO):
-    """Barre los tramos y devuelve (f_hz, s11) sobre una malla creciente y sin puntos repetidos."""
+def barrer(vna, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO, pausar=False):
+    """Barre los tramos y devuelve (f_hz, s11) sobre una malla creciente y sin puntos repetidos.
+
+    Con `pausar`, se detiene el barrido continuo del equipo mientras se mide y se reanuda al
+    acabar, para que el firmware no reescriba los datos mientras se leen.
+    """
     f, s11 = [], []
-    for inicio, fin in segmentos:
-        vna.set_sweep(int(inicio), int(fin), n_puntos)
-        s11_tramo, _, f_tramo = vna.sweep()
-        f.append(np.asarray(f_tramo, dtype=float))
-        s11.append(np.asarray(s11_tramo, dtype=complex))
+    if pausar:
+        _consulta(vna, "pause")
+    try:
+        for inicio, fin in segmentos:
+            vna.set_sweep(int(inicio), int(fin), n_puntos)
+            s11_tramo, _, f_tramo = vna.sweep()
+            f.append(np.asarray(f_tramo, dtype=float))
+            s11.append(np.asarray(s11_tramo, dtype=complex))
+    finally:
+        if pausar:
+            _consulta(vna, "resume")
     f, s11 = np.concatenate(f), np.concatenate(s11)
     f, unicos = np.unique(f, return_index=True)  # los extremos de tramos contiguos coinciden
     s11 = s11[unicos]
@@ -182,7 +192,7 @@ def a_measurement(f_hz, s11, medida):
     return Measurement(data=red, context=contexto)
 
 
-def medir(vna, medida, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO, raiz=RAW):
+def medir(vna, medida, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO, raiz=RAW, pausar=False):
     """Barre, valida y guarda. Devuelve (ruta del .s1p, Measurement de rfmeasurement).
 
     El Measurement lleva el informe de validación y el registro de trazabilidad de la
@@ -200,7 +210,7 @@ def medir(vna, medida, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO, raiz=R
         medida.vna_serie = medida.vna_serie or serie
         medida.vna_firmware = medida.vna_firmware or str(info.get("Version"))
 
-    f_hz, s11 = barrer(vna, segmentos, n_puntos)
+    f_hz, s11 = barrer(vna, segmentos, n_puntos, pausar=pausar)
     medicion = a_measurement(f_hz, s11, medida)
     medicion.validation = validate(medicion, rules=REGLAS)
 
@@ -219,6 +229,7 @@ def medir(vna, medida, segmentos=SEGMENTOS, n_puntos=PUNTOS_POR_SEGMENTO, raiz=R
             "puntos_por_segmento": n_puntos,
             "cal_sol_id": medida.cal_sol_id,
             "cal_firmware": calibracion_firmware(vna),
+            "barrido_pausado": pausar,
         },
         notas="S11 corregido por la calibración SOL cargada en el firmware; sin corrección por software",
     )

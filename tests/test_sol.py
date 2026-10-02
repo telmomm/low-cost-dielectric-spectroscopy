@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from lcds.sol import corregir, promediar, terminos_error
+from lcds.sol import combinar, corregir, incoherentes, promediar, terminos_error
 
 F = np.linspace(1e6, 3e9, 51)
 ED = 0.05 - 0.02j + 0 * F
@@ -35,3 +35,12 @@ def test_promediar_da_media_e_incertidumbre_por_partes():
 def test_promediar_exige_repeticiones():
     with pytest.raises(ValueError):
         promediar(np.ones((1, F.size)))
+
+
+def test_la_mediana_ignora_una_repeticion_con_el_patron_equivocado():
+    rng = np.random.default_rng(1)
+    buenas = [-1 + rng.normal(0, 1e-3, F.size) + 1j * rng.normal(0, 1e-3, F.size) for _ in range(2)]
+    trazas = [np.ones(F.size, complex), *buenas]  # la primera todavía era el abierto
+    assert incoherentes(trazas) == [0]
+    assert incoherentes(buenas) == []
+    np.testing.assert_allclose(combinar(trazas), -1, atol=5e-3)

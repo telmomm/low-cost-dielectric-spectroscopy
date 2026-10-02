@@ -28,7 +28,12 @@ src/lcds/
   provenance.py    registros de trazabilidad y grafo de una medida a sus barridos en bruto
   paths.py         rutas del repositorio
 tests/             pruebas del paquete con datos sintéticos
-scripts/           adquisición desde el VNA
+scripts/           se lanzan a mano con el equipo conectado; todos admiten --simulado
+  prueba_sol.py    patrones SOL y corrección por software, con comprobación
+  prueba_saltos.py lectura con y sin pausar el barrido del equipo
+  prueba_saltos_puntos.py  tramos de 101 y de 51 puntos: ¿los saltos van con el punto o con la frecuencia?
+  piloto_deriva.py deriva tras calibrar, con el corto conectado y sin sonda
+  medir_sonda.py   terna de la sonda y líquidos: de los .s1p a ε′ y σ con incertidumbre
 notebooks/         00 → …, se ejecutan en orden (ver notebooks/README.md)
 data/
   raw/             .s1p + .json, inmutables y versionados (serán el dataset abierto)

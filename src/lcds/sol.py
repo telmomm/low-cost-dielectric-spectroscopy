@@ -40,3 +40,31 @@ def terminos_error(abierto_m, corto_m, carga_m, patrones=PATRONES_IDEALES):
 def corregir(gamma_m, ed, er, es):
     """Aplica la corrección SOL a un Gamma medido sobre la misma malla de frecuencias."""
     return (np.asarray(gamma_m) - ed) / (er + es * np.asarray(gamma_m))
+
+
+def combinar(trazas):
+    """Mediana de las repeticiones, parte real e imaginaria por separado.
+
+    A diferencia de la media, no la arrastran los saltos esporádicos del equipo ni una
+    repetición tomada con el patrón equivocado, mientras sean minoría.
+    """
+    trazas = np.asarray(trazas, dtype=complex)
+    return np.median(trazas.real, axis=0) + 1j * np.median(trazas.imag, axis=0)
+
+
+def incoherentes(trazas, umbral=0.05, referencia=None, umbral_punto=0.5):
+    """Índices de las repeticiones que no son del mismo patrón que la referencia.
+
+    Una repetición se marca si su distancia mediana a la referencia supera `umbral`, o si algún
+    punto suelto supera `umbral_punto`: esto último caza el patrón cambiado a mitad de un tramo,
+    y queda muy por encima de los saltos esporádicos del equipo (hasta 0,2).
+
+    La referencia es, por defecto, la mediana del conjunto. Cuando el riesgo es que el patrón se
+    cambiara con la medida ya en marcha, conviene pasar la última repetición: es la que seguro
+    se tomó con el patrón puesto, y la mediana falla si las contaminadas son mayoría.
+    """
+    trazas = np.asarray(trazas, dtype=complex)
+    referencia = combinar(trazas) if referencia is None else np.asarray(referencia)
+    distancia = np.abs(trazas - referencia)
+    marcadas = (np.median(distancia, axis=1) > umbral) | (distancia.max(axis=1) > umbral_punto)
+    return [int(i) for i in np.flatnonzero(marcadas)]

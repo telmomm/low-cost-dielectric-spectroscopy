@@ -21,6 +21,7 @@ los puntos debe quedar dentro de la incertidumbre expandida.
 """
 
 import argparse
+import sys
 import tempfile
 from dataclasses import replace
 from datetime import datetime, timezone
@@ -70,6 +71,19 @@ class VNASimulado:
 
     def info(self):
         return {"Serial Number": "simulado", "Version": "simulado"}
+
+
+def esperar_intro(texto):
+    """Pide Intro descartando antes las pulsaciones acumuladas.
+
+    Sin esto, un Intro de más durante una medida se queda en la cola y el siguiente aviso no
+    espera: el barrido empieza con el patrón anterior todavía conectado.
+    """
+    if sys.stdin.isatty():
+        import termios
+
+        termios.tcflush(sys.stdin, termios.TCIFLUSH)
+    return input(texto)
 
 
 def db(x):
@@ -147,7 +161,7 @@ def main():
             if args.simulado:
                 vna.gamma = IDEAL[patron]
             else:
-                input(f"Conecta el patrón «{patron}» y pulsa Intro… ")
+                esperar_intro(f"Conecta el patrón «{patron}» y, con él ya puesto, pulsa Intro… ")
             trazas[patron] = []
             for i in range(1, args.repeticiones + 1):
                 medida = Medida(campana=campana, muestra=f"sol_{patron}", repeticion=i, cal_sol_id=cal_id)
