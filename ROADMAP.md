@@ -50,10 +50,11 @@ El SOTA no invalida la línea, pero mueve el foco (detalle en `docs/SOTA/README.
       0.5.0; barrido por tramos, validación y guardado funcionan (501 puntos en unos 24 s)
 - [x] Banda de trabajo fijada en 50 kHz–1,45 GHz, la misma que en `nanovna-calibration`. Por encima de
       1,5 GHz el equipo devuelve ceros exactos; queda fuera del alcance
-- [ ] **Calibración del firmware por tramos**: fuera del intervalo en que se calibró, el firmware da
-      valores sin sentido (|S11| hasta 2 entre 1 y 100 MHz). Decidir entre calibrar en el equipo sobre la
-      banda completa o corregir por software tramo a tramo (`scripts/prueba_sol.py`)
-- [ ] Ejecutar `scripts/prueba_sol.py` con los patrones del kit
+- [x] Calibración por tramos: la SOL se hace por software sobre los mismos tramos, encima de la del
+      firmware, que fuera de su intervalo da valores sin sentido
+- [x] `scripts/prueba_sol.py` ejecutado con los patrones del kit (2 de octubre): la SOL por software
+      funciona en toda la banda; resultado en `docs/cuaderno/2026-10-02_prueba_sol.md`
+- [ ] Investigar los saltos esporádicos que aparecen en un 7–9 % de los puntos con abierto y corto
 - [x] rfmeasurement 0.2.0 desde PyPI (trazabilidad e informes reproducibles)
 - [ ] En rfmeasurement: corregir la regla de pasividad para redes de un puerto (ver `docs/DECISIONES.md`)
 - [ ] Biblioteca de Zotero para la línea y exportación automática a `PAPER/art1_metrologia/v1/references.bib`

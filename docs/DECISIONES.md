@@ -21,6 +21,7 @@ Las puertas del [ROADMAP](../ROADMAP.md) (G0–G3) se registran aquí con la evi
 | 2026-10-02 | Tiempo de lectura del puerto serie a 0,25 s en `conectar()` | El comando `scan` tarda 1,5–3 s por tramo y pynanovna, con su valor por defecto, abandona a los 2 s |
 | 2026-10-02 | Un cero exacto en S11 se trata como barrido defectuoso | Con el firmware 0.5.0 el equipo devuelve ceros por encima de 1,5 GHz en vez de datos |
 | 2026-10-02 | Banda de trabajo: 50 kHz–1,45 GHz (`F_START_HZ`, `F_STOP_HZ` en `lcds.acquisition`) | La misma que en `nanovna-calibration`; por encima de 1,5 GHz el equipo, con el firmware 0.5.0, devuelve ceros. La línea se plantea para esa banda y no para los 3 GHz nominales |
+| 2026-10-02 | La SOL se hace por software (`lcds.sol`) sobre los mismos tramos del barrido, encima de la del firmware | Comprobado con el equipo: residuo mediano de −58 a −66 dB en toda la banda dejando una repetición fuera, también por debajo de 100 MHz, donde la calibración del firmware no vale. Sustituye a la decisión del 1 de octubre de usar solo la SOL del firmware |
 
 ## Abiertas
 
@@ -29,7 +30,7 @@ Las puertas del [ROADMAP](../ROADMAP.md) (G0–G3) se registran aquí con la evi
 | Confirmar G0 | Octubre | Scopus y WoS; lectura de los trabajos de pago |
 | Enfoque del Artículo 3: ya existe bajo coste in vivo en piel (Schiavoni 2023) e hidratación de la piel con VNA portátil (Cataldo 2022) | Tras G3 | Leer ambos a fondo antes de hablar con el colaborador clínico |
 | ¿Reportar también el error tras ajustar a un modelo de relajación, como Linha 2025, para poder compararse con él? | Fase 5 | Decisión de análisis; la medida directa sigue siendo el resultado principal |
-| Dónde se hace la SOL: fuera del intervalo calibrado el firmware da valores sin sentido (|S11| hasta 2 entre 1 y 100 MHz con la calibración que estaba cargada), y su comando `cal off` no tiene efecto, así que la corrección del firmware no se puede desactivar por USB | Fase 0 | Opciones: calibrar en el equipo sobre toda la banda, o SOL por software sobre los mismos tramos (`lcds.sol`), que se aplica encima de la del firmware y no interpola |
+| Saltos esporádicos en un 7–9 % de los puntos con abierto y corto, en bloques de frecuencias contiguas | Fase 3 | Probar a pausar el barrido continuo antes de leer; decidir si las repeticiones se combinan con la mediana y con qué criterio se rechaza un barrido |
 | Papel de la SOL en el presupuesto: con el modelo capacitivo, calibrar la sonda con corto, aire y agua da el mismo ε* sea cual sea la SOL (comprobado numéricamente: diferencia ~1e-9), siempre que no cambie entre la terna y la muestra. La SOL contaría como fuente solo con modelos de inversión no bilineales | Fase 2 | Qué modelos de inversión se van a comparar |
 | Patrón de cortocircuito de la sonda | Fase 2 | Repetibilidad medida de cada variante |
 | Diámetro de la sonda (SMA de panel o semirrígido de 0,141″) | Fase 2–3 | Sensibilidad a baja frecuencia en el piloto de rango útil |

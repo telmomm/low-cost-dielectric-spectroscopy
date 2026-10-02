@@ -1,0 +1,68 @@
+{
+  "campana": "prueba_sol",
+  "muestra": "sol_corto",
+  "repeticion": 4,
+  "temp_muestra_c": null,
+  "temp_ambiente_c": null,
+  "operador": null,
+  "cal_sol_id": "sol_20261002T080408Z",
+  "cal_sonda_id": null,
+  "sonda_id": null,
+  "vna_serie": "3939363645176569",
+  "vna_firmware": "0.5.0",
+  "promediado": null,
+  "minutos_desde_encendido": null,
+  "fuerza_contacto_n": null,
+  "notas": "",
+  "timestamp_utc": "20261002T081336Z",
+  "n_puntos": 501,
+  "f_inicio_hz": 50000.0,
+  "f_fin_hz": 1450000000.0,
+  "validacion": {
+    "integrity.structural": "pass",
+    "integrity.finite_values": "pass",
+    "integrity.frequency_grid": "pass",
+    "physics.passivity": "fail",
+    "physics.reciprocity": "not_applicable",
+    "quality.continuity": "pass",
+    "quality.dynamic_range": "pass"
+  },
+  "procedencia": {
+    "record_id": "5a8e2d38460946268495264b72bd69d8",
+    "operation": "adquirir_barrido",
+    "software_version": "rfmeasurement 0.2.0; python 3.14.5; numpy 2.5.3; scikit-rf 2.1.0; lcds 0.0.1; pynanovna 1.0.2",
+    "timestamp": "2026-10-02T08:14:01.701572+00:00",
+    "parameters": {
+      "instrumento": "NanoVNA-F V2",
+      "vna_serie": "3939363645176569",
+      "vna_firmware": "0.5.0",
+      "segmentos_hz": [
+        [
+          50000.0,
+          1000000.0
+        ],
+        [
+          1000000.0,
+          10000000.0
+        ],
+        [
+          10000000.0,
+          100000000.0
+        ],
+        [
+          100000000.0,
+          1000000000.0
+        ],
+        [
+          1000000000.0,
+          1450000000.0
+        ]
+      ],
+      "puntos_por_segmento": 101,
+      "cal_sol_id": "sol_20261002T080408Z",
+      "cal_firmware": "load open short cal'ed"
+    },
+    "inputs": [],
+    "notes": "S11 corregido por la calibración SOL cargada en el firmware; sin corrección por software"
+  }
+}
