@@ -3,7 +3,7 @@
 Sonda de pruebas para poner en marcha la cadena de medida con líquidos. Sigue la idea de
 González-Teruel et al. (2022), que mecanizaron un adaptador SMA-N para usar el lado N como apertura.
 
-**Estado:** por comprar, sin fabricar. Las dimensiones están por anotar cuando llegue la pieza.
+**Estado:** fabricada y probada con cortocircuito y aire el 4 de octubre de 2026 ([cuaderno](../../../docs/cuaderno/2026-10-04_piloto_corto.md)). Faltan las dimensiones y la foto de la cara, y revisar su planitud.
 
 ## Qué es
 
@@ -112,6 +112,28 @@ sonda para cuantificar lo que añaden. El orden previsto:
 | Cables más largos o de otro tipo (RG58, RG174) | Cómo escala con la longitud y la calidad del cable |
 
 Cada latiguillo se anota en `hardware/README.md` con tipo, longitud y conectores.
+
+## Cómo colocarla en el líquido
+
+![Colocación de la sonda en el líquido: bien y mal](esquema_inmersion.png)
+
+Punto de partida, conservador, para un líquido como el agua:
+
+| Qué | Cuánto | Por qué |
+|---|---|---|
+| Cara sumergida | 3–5 mm | Solo cuenta la cara: basta con que quede cubierta. Más profundidad no mejora nada y acerca el agua al SMA |
+| Agua por debajo de la cara | ≥ 20 mm | El campo sale unos milímetros de la apertura; el fondo no debe estar a su alcance |
+| Hasta las paredes del vaso | ≥ 15 mm desde el borde de la sonda | Lo mismo, hacia los lados |
+| Vaso | Vidrio o plástico, de al menos 45 mm de diámetro interior | Sin metal cerca de la apertura |
+
+Las cifras salen de escalar las recomendaciones habituales para sondas más pequeñas y de la sonda de
+González-Teruel et al., que midieron 1,5 mm de penetración; no están medidas en esta sonda.
+`scripts/piloto_agua.py` las comprueba: mide cuánto cambia la lectura al acercar el fondo o la pared.
+Con líquidos de menor permitividad (alcoholes) el campo llega más lejos y hará falta repetirlo.
+
+Al sumergir: entrar con la sonda algo inclinada para no atrapar aire, mirar la cara desde abajo a
+través del vaso, y dar un golpecito si hay burbujas. Entre medidas, secar la cara con papel que no
+suelte fibras antes de medir al aire.
 
 ## Calibración de la sonda
 

@@ -113,16 +113,11 @@ los trabajos de pago.
       banda se cubre por tramos (ahora, cinco tramos por décadas)
 - [ ] Termometría de la muestra (termopar o Pt100) leída por el mismo script
 - [ ] Primera terna aire / cortocircuito / agua y un líquido de comprobación; notebook `00_cadena_minima`
-- [ ] Decidir el patrón de cortocircuito con `scripts/piloto_corto.py`: lámina de cobre frente a papel de
-      aluminio, repetibilidad al recolocarlo y sonda al aire (no necesita líquidos)
-
-**Salida:** un .s1p con metadatos se convierte en ε′ y σ con un solo comando y el resultado en un
-líquido no usado para calibrar es físicamente razonable.
-
-## Fase 3 — Pilotos (noviembre)
-
-Cada piloto es un notebook y una entrada en `docs/cuaderno/`.
-
+- [x] Patrón de cortocircuito (`scripts/piloto_corto.py`, 4 de octubre): papel de aluminio con respaldo
+      blando; la lámina rígida de cobre no hace contacto fiable
+- [ ] Sonda v1: anotar dimensiones y foto de la cara (plana, comprobado) y aclarar el cambio de la medida al aire
+- [ ] Piloto del agua (`scripts/piloto_agua.py`): repetibilidad de la inmersión y cuánta agua hace falta
+      debajo y alrededor de la sonda
 - [x] **Deriva sin sonda** (`scripts/piloto_deriva.py`), con el equipo ya caliente: sin deriva apreciable
       en una hora por encima de 10 MHz; deriva lenta por debajo (de −60 a −53 dB)
 - [ ] **Deriva tras el encendido** (3 h, barridos cada 10–15 min) → tiempo de calentamiento. `01_piloto_deriva`

@@ -34,6 +34,7 @@ scripts/           se lanzan a mano con el equipo conectado; todos admiten --sim
   prueba_saltos_puntos.py  tramos de 101 y de 51 puntos: ¿los saltos van con el punto o con la frecuencia?
   piloto_deriva.py deriva tras calibrar, con el corto conectado y sin sonda
   piloto_corto.py  repetibilidad del cortocircuito de la sonda (cobre y aluminio) y sonda al aire; sin líquidos
+  piloto_agua.py   repetibilidad de la inmersión y cuánta agua hace falta alrededor de la sonda; solo agua
   medir_sonda.py   terna de la sonda y líquidos: de los .s1p a ε′ y σ con incertidumbre
 notebooks/         00 → …, se ejecutan en orden (ver notebooks/README.md)
 data/

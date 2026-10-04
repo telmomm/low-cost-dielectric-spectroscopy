@@ -19,7 +19,7 @@ Una carpeta por sonda (`sonda/v1/`…) con fotos, dimensiones medidas y fecha de
 
 | Id | Tipo | Ø conductor interior | Ø interior del exterior | Dieléctrico | Estado |
 |---|---|---|---|---|---|
-| [v1](sonda/v1/README.md) | Adaptador rígido SMA macho–N macho, con el lado N rebajado | por medir | por medir (≈ 7 mm) | PTFE | por comprar; para líquidos y la parte baja de la banda |
+| [v1](sonda/v1/README.md) | Adaptador rígido SMA macho–N macho, con el lado N rebajado | por medir | por medir (≈ 7 mm) | PTFE | fabricada el 4 de octubre; faltan dimensiones y foto de la cara. Para líquidos y la parte baja de la banda |
 | v2 | Semirrígido de 0,141″ o SMA de panel | | | PTFE | prevista; para la parte alta de la banda y para tejido |
 
 ## Soporte (`soporte/`)

@@ -25,6 +25,7 @@ Las puertas del [ROADMAP](../ROADMAP.md) (G0–G3) se registran aquí con la evi
 | 2026-10-02 | Las repeticiones se combinan con la mediana (`lcds.sol.combinar`) y se comprueba su coherencia tramo a tramo | Robusta frente a los saltos del equipo y frente a un patrón cambiado con la medida en marcha, que ya ha ocurrido en dos tandas |
 | 2026-10-02 | `pausar` se queda desactivado | La prueba de saltos da la misma tasa con el barrido pausado (1,2 %) que en continuo (1,5 %) |
 | 2026-10-02 | Sonda v1 de pruebas: lado N, rebajado, de un adaptador rígido SMA macho–N macho enroscado directamente al puerto; los cables se añaden después como factor experimental | Barata, con antecedente directo (González-Teruel 2022) y más sensible a baja frecuencia que una apertura pequeña. Empezar sin cable quita una fuente de error. Detalle en `hardware/sonda/v1/README.md` |
+| 2026-10-04 | El cortocircuito de la sonda se hace con papel de aluminio y un respaldo blando | Piloto del 4 de octubre: se repite por debajo del 0,5 % de la distancia aire-corto en cinco de seis colocaciones; la lámina rígida de cobre solo hizo contacto limpio en una de seis |
 
 ## Abiertas
 
@@ -35,7 +36,8 @@ Las puertas del [ROADMAP](../ROADMAP.md) (G0–G3) se registran aquí con la evi
 | ¿Reportar también el error tras ajustar a un modelo de relajación, como Linha 2025, para poder compararse con él? | Fase 5 | Decisión de análisis; la medida directa sigue siendo el resultado principal |
 | Saltos de fase esporádicos (1–7°). Por encima de 100 MHz se concentran en el 20–40 % del recorrido de cada tramo (hasta el 46 % de los barridos en la peor frecuencia) y se esquivan con un segundo juego de tramos desplazado; por debajo de 100 MHz son menos frecuentes y su patrón no está claro. Causa desconocida | Fase 2 | Decidir si la adquisición pasa a medir con los dos juegos de tramos y mediana de cinco repeticiones (el doble de tiempo por muestra) |
 | Papel de la SOL en el presupuesto: con el modelo capacitivo, calibrar la sonda con corto, aire y agua da el mismo ε* sea cual sea la SOL (comprobado numéricamente: diferencia ~1e-9), siempre que no cambie entre la terna y la muestra. La SOL contaría como fuente solo con modelos de inversión no bilineales | Fase 2 | Qué modelos de inversión se van a comparar |
-| Patrón de cortocircuito de la sonda | Fase 2 | Repetibilidad medida de cada variante |
+| Desfase entre aire y corto de la sonda v1: equivale a 0,7–0,8 pF, más de lo esperable. La cara es plana | Fase 2 | Contrastar con la capacidad que salga del piloto del agua (`scripts/piloto_agua.py`), que no usa cortocircuito |
+| Calibración de la sonda sin cortocircuito (aire, agua y un tercer líquido, como González-Teruel 2022) | Fase 2 | Si el corto de aluminio resulta no ser lo bastante ideal al medir líquidos; `lcds.probe` solo admite hoy la terna con corto |
 | Sonda definitiva: la v1 (conector N) cubre la parte baja de la banda; falta decidir la de apertura pequeña para la parte alta y para tejido | Fase 2–3 | Banda útil que dé la v1 con metanol y etanol |
 | G1: umbrales, banda mínima y criterios de rechazo | Fin de noviembre | Pilotos |
 | Revista del Artículo 1 | Fase 5 | Si el peso del resultado es metrológico o de hardware abierto |

@@ -91,23 +91,52 @@ def por_tramo(f, valores, formato="{:6.2f}"):
 def analizar(f, datos, sesion, figuras):
     aire = np.array([combinar(t) for t in datos["aire"].values()])
     ref_aire = combinar(aire)
-    cortos = {m: np.array([combinar(t) for t in datos[f"corto_{m}"].values()]) for m in MATERIALES if f"corto_{m}" in datos}
+
+    # ¿Hubo contacto? Un barrido es un cortocircuito de verdad si queda lejos del aire. Se compara
+    # con el barrido más alejado, porque una lámina que no toca el conductor central se parece al aire.
+    materiales = [m for m in MATERIALES if f"corto_{m}" in datos]
+    tramos = [(f >= a) & (f <= b) for a, b in SEGMENTOS]
+
+    def distancias(s):  # distancia al aire en cada tramo: el contacto puede perderse a mitad de un barrido
+        return np.array([np.median(np.abs(s - ref_aire)[k]) for k in tramos])
+
+    lejania = {m: {c: [distancias(s) for s in t] for c, t in datos[f"corto_{m}"].items()} for m in materiales}
+    tope = np.max([d for m in materiales for ds in lejania[m].values() for d in ds], axis=0)
+
+    def contacto(ds):  # fracción de tramos, entre todos los barridos de la colocación, con contacto
+        return float(np.mean([d > 0.7 * tope for d in ds]))
+
+    print(f"\nTanda {sesion}. Contacto de cada colocación (cuenta un tramo si llega al 70 % del más alejado del aire)")
+    cortos = {}
+    for m in materiales:
+        buenas = [c for c, ds in lejania[m].items() if contacto(ds) == 1]
+        estado = " ".join(f"{c}:{'sí' if c in buenas else ('a medias' if contacto(ds) > 0 else 'no')}"
+                          for c, ds in sorted(lejania[m].items()))
+        print(f"   {m:9s} {len(buenas)} de {len(lejania[m])} colocaciones con contacto en todos los tramos  ({estado})")
+        if len(buenas) >= 2:
+            cortos[m] = np.array([combinar(datos[f"corto_{m}"][c]) for c in buenas])
+    if not cortos:
+        raise SystemExit("Ningún material tiene al menos dos colocaciones con contacto: no hay nada que comparar.")
     ref_corto = combinar(np.concatenate(list(cortos.values())))
     escala = np.abs(ref_aire - ref_corto)  # distancia aire-corto: la escala de la calibración de la sonda
 
     # Ruido de un barrido: mitad de la diferencia entre los dos barridos de una misma colocación
-    pares = [np.abs(t[0] - t[1]) / 2 for muestra in datos.values() for t in muestra.values() if len(t) >= 2]
+    pares = [np.abs(t[0] - t[1]) / 2 for t in datos["aire"].values() if len(t) >= 2]
     ruido = np.median(pares, axis=0) / escala
 
-    print(f"\nTanda {sesion}. Tramos (MHz): " + "  ".join(f"{a / 1e6:g}-{b / 1e6:g}" for a, b in SEGMENTOS))
-    print("\n1) Dispersión entre colocaciones, en % de la distancia aire-corto (mediana por tramo)")
-    print(f"   ruido de un barrido      {por_tramo(f, 100 * ruido)}")
+    print("\nTramos (MHz): " + "  ".join(f"{a / 1e6:g}-{b / 1e6:g}" for a, b in SEGMENTOS))
+    print("\n1) Dispersión entre colocaciones con contacto, en % de la distancia aire-corto (mediana por tramo)")
+    print(f"   ruido de un barrido (aire) {por_tramo(f, 100 * ruido)}")
     dispersion = {}
     for nombre, t in (("aire", aire), *cortos.items()):
         centro = combinar(t)
         dispersion[nombre] = np.sqrt(np.mean(np.abs(t - centro) ** 2, axis=0) * len(t) / (len(t) - 1)) / escala
         etiqueta = "aire" if nombre == "aire" else f"corto de {nombre}"
         print(f"   {etiqueta:22s}   {por_tramo(f, 100 * dispersion[nombre])}   ({len(t)} colocaciones)")
+    for m in cortos:  # ¿se mantiene el corto mientras se sujeta? diferencia entre los dos barridos de una colocación
+        dentro = np.median([np.abs(t[0] - t[1]) / 2 for c, t in datos[f"corto_{m}"].items()
+                            if contacto(lejania[m][c]) == 1], axis=0) / escala
+        print(f"   {'  ' + m + ', mientras se sujeta':24s} {por_tramo(f, 100 * dentro)}")
 
     if len(cortos) == 2:
         diferencia = np.abs(combinar(cortos["cobre"]) - combinar(cortos["aluminio"])) / escala
@@ -118,13 +147,15 @@ def analizar(f, datos, sesion, figuras):
     cociente = -ref_aire / ref_corto
     theta = -np.angle(cociente) / 2
     capacidad = np.tan(theta) / (2 * np.pi * f * Z0)
+    tiempo = theta / (2 * np.pi * f)  # si fuera un trozo de línea en vez de una capacidad
     print("\n3) La sonda al aire frente al corto")
     print(f"   |Γ aire / Γ corto|        {por_tramo(f, np.abs(cociente), '{:6.3f}')}")
     print(f"   desfase respecto a 180°   {por_tramo(f, np.degrees(2 * theta), '{:6.2f}')}  (grados)")
     print(f"   capacidad equivalente     {por_tramo(f, 1e12 * capacidad, '{:6.3f}')}  (pF)")
-    print("   Si la apertura es una capacidad, el módulo vale 1, el desfase crece con la frecuencia y la\n"
-          "   capacidad sale parecida en todos los tramos. Solo es fiable donde la calibración del firmware\n"
-          "   vale (por encima de 100 MHz con la que estaba cargada el 2 de octubre).")
+    print(f"   retardo equivalente       {por_tramo(f, 1e12 * tiempo, '{:6.1f}')}  (ps)")
+    print("   Solo es fiable donde la calibración del firmware vale (por encima de 100 MHz con la que estaba\n"
+          "   cargada). El desfase mezcla la capacidad de la apertura con la inductancia del cortocircuito:\n"
+          "   1 nH en el corto equivale a 0,4 pF. La capacidad es, por tanto, una cota superior.")
 
     figuras.mkdir(parents=True, exist_ok=True)
     ruta = figuras / f"{CAMPANA}_{sesion}.png"

@@ -14,6 +14,10 @@ Para cada muestra se calcula eps' y sigma con su incertidumbre expandida (motor 
 rfmeasurement; fuentes: repetibilidad de los cuatro coeficientes de reflexión y temperatura del
 agua). Si la muestra es metanol, etanol o agua, se compara con su modelo de referencia. El agua
 sirve para comprobar el flujo, no para validar: es el líquido de calibración.
+
+Una muestra llamada «alcohol96» (alcohol de 96° de farmacia) se dibuja junto al etanol puro solo
+como orientación: lleva en torno a un 4 % de agua y, a veces, aditivos, así que su permitividad
+es algo mayor que la del etanol y la diferencia no es un error de medida.
 """
 
 import argparse
@@ -48,6 +52,7 @@ INSTRUCCION = {
     "agua": "Sumerge la sonda en agua desionizada, sin burbujas en la apertura",
 }
 REFERENCIAS = {"metanol": methanol, "etanol": ethanol, "agua": water}
+ORIENTATIVAS = {"alcohol96": ethanol}  # se compara con el líquido puro, sin valor de validación
 COBERTURA = 0.95
 AZUL = "#2a78d6"
 
@@ -236,7 +241,7 @@ def main():
             gammas = {"muestra": media, **medias}
             u_gammas = {k: v / np.sqrt(n) for k, v in {"muestra": u, **us}.items()}  # de las medias
             U = incertidumbre(f, gammas, u_gammas, temp_agua, args.u_temp)
-            modelo_ref = REFERENCIAS.get(nombre)
+            modelo_ref = REFERENCIAS.get(nombre) or ORIENTATIVAS.get(nombre)
             try:
                 ref = modelo_ref(f, temp) if modelo_ref else None
             except ValueError as error:  # temperatura fuera de las tablas
@@ -244,6 +249,9 @@ def main():
                 ref = None
 
             print(f"\n  {nombre} a {temp:g} °C" + ("" if ref is None else " (con referencia)"))
+            if nombre in ORIENTATIVAS:
+                print("    La referencia es etanol puro, solo como orientación: con un 4 % de agua se espera una ε′\n"
+                      "    algo mayor. Las columnas de error y «dentro de U» no miden aquí la exactitud del sistema.")
             resumen(f, eps, sigma, U, ref)
             if nombre == "agua":
                 print("    El agua es el líquido de calibración: esta comparación solo comprueba el flujo.")
